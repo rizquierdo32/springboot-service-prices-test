@@ -26,6 +26,6 @@ public class PriceServiceImpl implements PriceService {
   public Price findPriceByBrandIdAndProductIdAndApplicationDate(Long brandId, Long productId, LocalDateTime date) {
     Optional<PriceEntity> optPrice = priceRepository.findFirstByProductIdAndBrandIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(productId, brandId, date, date);
     return optPrice.map(x -> modelMapper.map(x, Price.class))
-        .orElseThrow(() -> new NoSuchElementException("Price not found"));
+        .orElseThrow(NoSuchElementException::new);
   }
 }

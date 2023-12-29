@@ -17,13 +17,12 @@ public class GlobalExceptionHandler {
     String paramName = ex.getParameterName();
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(ErrorDto.builder().code(HttpStatus.BAD_REQUEST.value())
-            .error("Error: The parameter '" + paramName + "' is mandatory and has not been reported. : "
-                + ex.getMessage()).build());
+            .error(ex.getMessage()).build());
   }
 
   @ExceptionHandler(NoSuchElementException.class)
   public ResponseEntity<ErrorDto>  handleNoSuchElementException(NoSuchElementException ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(ErrorDto.builder().code(HttpStatus.NOT_FOUND.value()).error(ex.getMessage()).build());
+        .body(ErrorDto.builder().code(HttpStatus.NOT_FOUND.value()).error("Price not found").build());
   }
 }

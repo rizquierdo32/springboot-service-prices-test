@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -68,66 +69,50 @@ public class PriceControllerIntegrationTest {
 				.getContentAsString();
 		ErrorDto errorDto = objectMapper.readValue(responseJson, ErrorDto.class);
 		assertThat(errorDto.getError()).isEqualTo("Price not found");
+		assertThat(errorDto.getCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
 
 	}
 
 	@Test
-	public void testIntegrationNotParamDate() throws Exception {
-		String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/getPriceInfo")
-						.param("brandId", "1")
-						.param("productId", "35455")
-						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
-		ErrorDto errorDto = objectMapper.readValue(responseJson, ErrorDto.class);
-		assertThat(errorDto.getError()).isEqualTo("Error: The parameter 'date' " +
-				"is mandatory and has not been reported. : " +
-				"Required request parameter 'date' for method parameter type LocalDateTime is not present");
+	public void testIntegrationWithoutDate() throws Exception {
+		performBadRequestTest("1", "35455", null,
+				"Required request parameter 'date' for method parameter type LocalDateTime is not present",HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
-	public void testIntegrationNotParamProductId() throws Exception {
+	public void testIntegrationWithoutProductId() throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
-
-		String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/getPriceInfo")
-						.param("brandId", "1")
-						.param("date", date.toString())
-						.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isBadRequest())
-				.andReturn()
-				.getResponse()
-				.getContentAsString();
-		ErrorDto errorDto = objectMapper.readValue(responseJson, ErrorDto.class);
-		assertThat(errorDto.getError()).isEqualTo("Error: The parameter 'productId' " +
-				"is mandatory and has not been reported. : " +
-				"Required request parameter 'productId' for method parameter type Long is not present");
+		performBadRequestTest("1", null, date.toString(),
+				"Required request parameter 'productId' for method parameter type Long is not present",HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
-	public void testIntegrationNotParamBrandId() throws Exception {
+	public void testIntegrationWithoutBrandId() throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
+		performBadRequestTest(null, "35455", date.toString(),
+				"Required request parameter 'brandId' for method parameter type Long is not present", HttpStatus.BAD_REQUEST.value());
+	}
+
+
+	private void performBadRequestTest(String brandId, String productId, String date, String expectedErrorMessage,int errorCode) throws Exception {
 		String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/getPriceInfo")
-						.param("productId", "35455")
-						.param("date", date.toString())
+						.param("brandId", brandId)
+						.param("productId", productId)
+						.param("date", date)
 						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andReturn()
 				.getResponse()
 				.getContentAsString();
+
 		ErrorDto errorDto = objectMapper.readValue(responseJson, ErrorDto.class);
-		assertThat(errorDto.getError()).isEqualTo("Error: The parameter 'brandId' " +
-				"is mandatory and has not been reported. : " +
-				"Required request parameter 'brandId' for method parameter type Long is not present");
+		assertThat(errorDto.getError()).isEqualTo(expectedErrorMessage);
+		assertThat(errorDto.getCode()).isEqualTo(errorCode);
 	}
-
-
 
 
 	private void assertIntegrationTest(int day, int month,int hour, int minute, BigDecimal expectedPrice) throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, month, day, hour, minute);
-
 		PriceDto priceDto = performAndGetPriceDto(date);
 
 		// Verifica las propiedades del objeto directamente
