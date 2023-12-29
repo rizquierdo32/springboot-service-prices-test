@@ -56,7 +56,7 @@ public class PriceControllerIntegrationTest {
 	}
 
 	@Test
-	public void testIntegrationProductIdNotExits() throws Exception {
+	public void testIntegrationProductIdNotExist() throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
 		String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/getPriceInfo")
 						.param("brandId", "1")

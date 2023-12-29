@@ -120,7 +120,7 @@ Aqui os dejo una breve explicacion de los test implementados en PriceControllerI
 - `testIntegration_16_June_21_00()`: Test de integración que se ejecuta el 16 de junio a las 21:00 PM.
 - `testIntegrationWithoutProductId()`: Test que verifica el comportamiento cuando no se proporciona un ID de producto.
 - `testIntegrationWithoutDate()`: Test que verifica el comportamiento cuando no se proporciona una fecha.
-- `testIntegrationProductIdNotExits()`: Test que verifica el comportamiento cuando el ID de producto no existe.
+- `testIntegrationProductIdNotExist()`: Test que verifica el comportamiento cuando el ID de producto no existe.
 - `testIntegrationWithoutBrandId()`: Test que verifica el comportamiento cuando no se proporciona un ID de marca.
 
 
