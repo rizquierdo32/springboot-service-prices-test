@@ -1,6 +1,5 @@
 package com.rizquierdo.servicepricestest.infraestructure.mapper;
 
-import com.rizquierdo.servicepricestest.domain.model.Brand;
 import com.rizquierdo.servicepricestest.domain.model.Price;
 import com.rizquierdo.servicepricestest.infraestructure.persistence.entity.PriceEntity;
 import com.rizquierdo.servicepricestest.infraestructure.rest.dto.PriceDto;
@@ -16,9 +15,10 @@ public class ModelMapperConfig {
   public ModelMapper priceMapper() {
     ModelMapper modelMapper = new ModelMapper();
     modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-    modelMapper.typeMap(PriceEntity.class, Price.class).addMappings(mapper -> {
-      mapper.map(PriceEntity::getBrand, Price::setBrand);
-    });
+    modelMapper.typeMap(PriceEntity.class, Price.class)
+        .addMappings(mapper -> mapper.map(PriceEntity::getBrand, Price::setBrand))
+        .addMappings(mapper -> mapper.map(PriceEntity::getPrice, Price::setAmount)
+        );
     modelMapper.typeMap(Price.class, PriceDto.class);
     return modelMapper;
   }

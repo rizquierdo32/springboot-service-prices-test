@@ -7,7 +7,6 @@ import com.rizquierdo.servicepricestest.infraestructure.persistence.entity.Price
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -16,12 +15,15 @@ import java.util.Optional;
 @Service
 public class PriceServiceImpl implements PriceService {
 
-  @Qualifier("priceMapper")
-  @Autowired
-  private ModelMapper modelMapper;
+  private final ModelMapper modelMapper;
+  private final JpaPriceRepository priceRepository;
 
   @Autowired
-  private JpaPriceRepository priceRepository;
+  public PriceServiceImpl(@Qualifier("priceMapper") ModelMapper modelMapper, JpaPriceRepository priceRepository) {
+    this.modelMapper = modelMapper;
+    this.priceRepository = priceRepository;
+  }
+
 
   public Price findPriceByBrandIdAndProductIdAndApplicationDate(Long brandId, Long productId, LocalDateTime date) {
     Optional<PriceEntity> optPrice = priceRepository.findFirstByProductIdAndBrandIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(productId, brandId, date, date);

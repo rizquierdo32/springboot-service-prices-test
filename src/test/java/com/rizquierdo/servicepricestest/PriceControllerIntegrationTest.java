@@ -21,42 +21,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PriceControllerIntegrationTest {
+class PriceControllerIntegrationTest {
+
+	private final MockMvc mockMvc;
+	private final ObjectMapper objectMapper;
 
 	@Autowired
-	private MockMvc mockMvc;
+  PriceControllerIntegrationTest(MockMvc mockMvc, ObjectMapper objectMapper) {
+    this.mockMvc = mockMvc;
+    this.objectMapper = objectMapper;
+  }
 
-	@Autowired
-	private ObjectMapper objectMapper;
 
-
-	@Test
-	public void testIntegration_14_June_10_00() throws Exception {
-		assertIntegrationTest(14, 6,10, 0, BigDecimal.valueOf(35.50).setScale(2, RoundingMode.HALF_UP));
+  @Test
+	void testIntegration_14_June_10_00() throws Exception {
+		assertIntegrationTest(14, 10, BigDecimal.valueOf(35.50).setScale(2, RoundingMode.HALF_UP));
 	}
 
 	@Test
-	public void testIntegration_14_June_16_00() throws Exception {
-		assertIntegrationTest(14, 6,16, 0, BigDecimal.valueOf(25.45).setScale(2, RoundingMode.HALF_UP)) ;
+	void testIntegration_14_June_16_00() throws Exception {
+		assertIntegrationTest(14, 16, BigDecimal.valueOf(25.45).setScale(2, RoundingMode.HALF_UP)) ;
 	}
 
 	@Test
-	public void testIntegration_14_June_21_00() throws Exception {
-		assertIntegrationTest(14, 6,21, 0, BigDecimal.valueOf(35.50).setScale(2, RoundingMode.HALF_UP));
+	void testIntegration_14_June_21_00() throws Exception {
+		assertIntegrationTest(14, 21, BigDecimal.valueOf(35.50).setScale(2, RoundingMode.HALF_UP));
 	}
 
 	@Test
-	public void testIntegration_15_June_10_00() throws Exception {
-		assertIntegrationTest(15, 6,10, 0, BigDecimal.valueOf(30.50).setScale(2, RoundingMode.HALF_UP));
+	void testIntegration_15_June_10_00() throws Exception {
+		assertIntegrationTest(15, 10, BigDecimal.valueOf(30.50).setScale(2, RoundingMode.HALF_UP));
 	}
 
 	@Test
-	public void testIntegration_16_June_21_00() throws Exception {
-		assertIntegrationTest(16, 6,21, 0, BigDecimal.valueOf(38.95).setScale(2, RoundingMode.HALF_UP));
+	void testIntegration_16_June_21_00() throws Exception {
+		assertIntegrationTest(16, 21, BigDecimal.valueOf(38.95).setScale(2, RoundingMode.HALF_UP));
 	}
 
 	@Test
-	public void testIntegrationProductIdNotExist() throws Exception {
+	void testIntegrationProductIdNotExist() throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
 		String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/getPriceInfo")
 						.param("brandId", "1")
@@ -74,20 +77,20 @@ public class PriceControllerIntegrationTest {
 	}
 
 	@Test
-	public void testIntegrationWithoutDate() throws Exception {
+	void testIntegrationWithoutDate() throws Exception {
 		performBadRequestTest("1", "35455", null,
 				"Required request parameter 'date' for method parameter type LocalDateTime is not present",HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
-	public void testIntegrationWithoutProductId() throws Exception {
+	void testIntegrationWithoutProductId() throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
 		performBadRequestTest("1", null, date.toString(),
 				"Required request parameter 'productId' for method parameter type Long is not present",HttpStatus.BAD_REQUEST.value());
 	}
 
 	@Test
-	public void testIntegrationWithoutBrandId() throws Exception {
+	void testIntegrationWithoutBrandId() throws Exception {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
 		performBadRequestTest(null, "35455", date.toString(),
 				"Required request parameter 'brandId' for method parameter type Long is not present", HttpStatus.BAD_REQUEST.value());
@@ -111,14 +114,14 @@ public class PriceControllerIntegrationTest {
 	}
 
 
-	private void assertIntegrationTest(int day, int month,int hour, int minute, BigDecimal expectedPrice) throws Exception {
-		LocalDateTime date = LocalDateTime.of(2020, month, day, hour, minute);
+	private void assertIntegrationTest(int day, int hour, BigDecimal expectedPrice) throws Exception {
+		LocalDateTime date = LocalDateTime.of(2020, 6, day, hour, 0);
 		PriceDto priceDto = performAndGetPriceDto(date);
 
 		// Verifica las propiedades del objeto directamente
 		assertThat(priceDto.getBrandId()).isEqualTo(1);
 		assertThat(priceDto.getProductId()).isEqualTo(35455);
-		assertThat(priceDto.getPrice()).isEqualTo(expectedPrice);
+		assertThat(priceDto.getAmount()).isEqualTo(expectedPrice);
 	}
 
 	private PriceDto performAndGetPriceDto(LocalDateTime date) throws Exception {

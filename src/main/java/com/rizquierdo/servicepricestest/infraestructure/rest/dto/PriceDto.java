@@ -1,6 +1,5 @@
 package com.rizquierdo.servicepricestest.infraestructure.rest.dto;
 
-import com.rizquierdo.servicepricestest.domain.model.Brand;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ public class PriceDto   {
   private Integer priceList;
   private LocalDateTime startDate;
   private LocalDateTime endDate;
-  private BigDecimal price;
+  private BigDecimal amount;
   private String currency;
 
 }

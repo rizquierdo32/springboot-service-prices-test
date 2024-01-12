@@ -14,7 +14,6 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
   public ResponseEntity<ErrorDto> handleMissingServletRequestParameter(MissingServletRequestParameterException ex) {
-    String paramName = ex.getParameterName();
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(ErrorDto.builder().code(HttpStatus.BAD_REQUEST.value())
             .error(ex.getMessage()).build());
