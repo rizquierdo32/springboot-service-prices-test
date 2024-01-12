@@ -31,6 +31,6 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(ErrorDto.builder().code(HttpStatus.INTERNAL_SERVER_ERROR.value())
-            .error("Se ha producido un error interno").build());
+            .error("Se ha producido un error interno : "+ ex.getMessage()).build());
   }
 }
