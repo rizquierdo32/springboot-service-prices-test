@@ -6,11 +6,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
-@Setter
 @Entity
 @Table(name = "PRICES")
 public class PriceEntity {

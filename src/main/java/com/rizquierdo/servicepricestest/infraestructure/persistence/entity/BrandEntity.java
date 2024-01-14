@@ -6,11 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
-@Setter
 @Entity
 @Table(name = "BRAND")
 public class BrandEntity {

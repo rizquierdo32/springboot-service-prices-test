@@ -1,4 +1,4 @@
-package com.rizquierdo.servicepricestest;
+package com.rizquierdo.servicepricestest.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rizquierdo.servicepricestest.infraestructure.rest.dto.ErrorDto;
@@ -94,6 +94,19 @@ class PriceControllerIntegrationTest {
 		LocalDateTime date = LocalDateTime.of(2020, 2, 2, 2, 2);
 		performBadRequestTest(null, "35455", date.toString(),
 				"Required request parameter 'brandId' for method parameter type Long is not present", HttpStatus.BAD_REQUEST.value());
+	}
+
+	@Test
+	void testIntegrationWrongEndpoint() throws Exception {
+		String responseJson = mockMvc.perform(MockMvcRequestBuilders.get("/getPriceInfoFail"))
+				.andExpect(status().isInternalServerError())
+				.andReturn()
+				.getResponse()
+				.getContentAsString();
+
+		ErrorDto errorDto = objectMapper.readValue(responseJson, ErrorDto.class);
+		assertThat(errorDto.getError()).isEqualTo("Se ha producido un error interno : No static resource getPriceInfoFail.");
+		assertThat(errorDto.getCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
 
