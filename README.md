@@ -4,6 +4,7 @@
 ## Table of Contents
 * [Enunciado](#enunciado)
 * [Tecnologías](#tecnologías)
+* [Arquitectura](#arquitectura)
 * [Estructura de proyecto](#estructura-de-proyecto)
 * [Instalacion](#instalacion)
 * [Test](#test)
@@ -48,8 +49,51 @@ Resultados correctos en los test.
 - BBDD H2
 - Spring data - JPA
 - Lombok
-- Junit
 - Modelmapper (Tambien se podría utilizar mapstruct)
+- Junit
+- Mockito
+- Jacoco
+
+Utilizamos git como sistema de control de versiones distribuido. Para gestionar nuestro proyecto. Al ser un proyecto sencillo lo gestionamos con la rama main y la develop para el desarrollo del proyecto. Tambien utilizamos una rama en la que creamos los test. Al ser algo sencillo no opte por Git Flow. Aunque así hubiera estado mucho mejor estructurado.
+
+Hemos utilizado Spring Boot ya que nos permite configurar un entorno mas rapidamente y nos facilita toda la configuración.
+
+Elegímos Spring Data JPA ya que simplifica el acceso a bases de datos relacionales en Java, abstrayendo la complejidad de JPA, ofreciendo operaciones CRUD eficientes y permitiendo consultas personalizadas, lo que agiliza el desarrollo.
+
+Lombok nos simplifica la creación de clases mediante anotaciones, generando automáticamente métodos como getters, setters, constructores y facilitando la escritura de código conciso y legible.
+
+JUnit nos facilita la creación y ejecución de pruebas, mientras que Mockito ayuda a simular objetos y comportamientos, permitiendo pruebas aisladas y eficientes.
+Tambien hemos utilizado JaCoCo que es una herramienta de cobertura de código. Proporciona informes detallados sobre qué partes del código fuente están cubiertas por pruebas unitarias, ayudando a mejorar la calidad del software.
+
+
+## Arquitectura
+
+En este proyecto hemos utilizado una arquitectura hexagonal, también conocida como "Puertos y Adaptadores", por las siguientes razones:
+
+#### Separación de Responsabilidades
+- Claridad en la separación entre la lógica de negocio y los detalles de implementación.
+- Facilita el mantenimiento y la evolución del código al evitar dependencias directas.
+
+#### Flexibilidad y Adaptabilidad
+- Permite cambios en los detalles de implementación sin afectar la lógica de negocio.
+- Facilita la adaptación a nuevas tecnologías o entornos sin un gran impacto en el código existente.
+
+#### Pruebas Unitarias Aisladamente
+- Aísla la lógica de negocio de los detalles de implementación, facilitando pruebas más enfocadas y menos propensas a errores.
+
+#### Reutilización de Componentes
+- La capa de dominio independiente fomenta la reutilización de componentes.
+- Facilita la incorporación de nuevas características sin afectar las existentes.
+
+#### Mejora de la Mantenibilidad
+- Estructura clara y modular para facilitar la identificación y corrección de problemas.
+- Mejora la capacidad para incorporar nuevas funcionalidades.
+
+#### Adopción de Principios SOLID
+- Sigue los principios SOLID, promoviendo prácticas de desarrollo sólidas.
+- Mejora la calidad del diseño del software y la capacidad para enfrentar cambios en los requisitos.
+
+Esta elección proporciona una base sólida para el desarrollo y mantenimiento eficiente del proyecto.
 
 
 
@@ -95,6 +139,18 @@ Y añadirlo al JAVA_HOME para compilar correctamente.
 Para lanzar los test seria lanzando:
 
 `./mvnw test`
+
+Para lanzar los test con jacoco report :
+
+`./mvnw clean test jacoco:report`
+
+Los informes te lo dejara en la ruta del proyecto en target/site:
+
+`cd ./springboot-service-prices-test/target/site`
+
+
+![Example screenshot](./img/coverage.png)
+
 
 
 Y para levantar el servicio.
